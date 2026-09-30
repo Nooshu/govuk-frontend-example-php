@@ -17,7 +17,6 @@ use App\Http\Controllers\JourneyController;
 use App\Service\Journey;
 use App\Support\Assets;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -63,26 +62,15 @@ it('serves fingerprinted assets and frontend static files', function (): void {
 });
 
 it('validates journey steps and guards incomplete check/confirmation', function (): void {
-    $this->get('/check-answers')->assertRedirect('/task-list');
-    $this->post('/check-answers')->assertRedirect('/task-list');
-    $this->get('/confirmation')->assertRedirect('/task-list');
+    $this->get('/check-answers')->assertRedirect('/licence-length');
+    $this->post('/check-answers')->assertRedirect('/licence-length');
+    $this->get('/confirmation')->assertRedirect('/');
 
-    $this->post('/name', ['firstName' => '', 'lastName' => ''])->assertRedirect('/name');
-    $this->post('/date-of-birth', ['day' => '', 'month' => '', 'year' => ''])->assertRedirect('/date-of-birth');
-    $this->post('/email', ['email' => 'not-an-email'])->assertRedirect('/email');
-    $this->post('/contact-preference', ['contactBy' => 'nope'])->assertRedirect('/contact-preference');
-    $this->post('/contact-preference', ['contactBy' => 'telephone', 'telephone' => ''])->assertRedirect('/contact-preference');
-    $this->post('/where-you-will-fish', ['regions' => []])->assertRedirect('/where-you-will-fish');
     $this->post('/licence-length', ['licenceLength' => 'forever'])->assertRedirect('/licence-length');
-    $this->post('/start-month', ['startMonth' => ''])->assertRedirect('/start-month');
-    $this->post('/address', ['addressLine1' => '', 'town' => '', 'postcode' => ''])->assertRedirect('/address');
-    $this->post('/create-a-password', ['password' => 'short', 'confirmPassword' => 'different'])->assertRedirect('/create-a-password');
-
-    // telephone happy path branch after fixing preference
-    $this->post('/contact-preference', [
-        'contactBy' => 'telephone',
-        'telephone' => '07700900000',
-    ])->assertRedirect('/task-list');
+    $this->post('/name', ['fullName' => ''])->assertRedirect('/name');
+    $this->post('/date-of-birth', ['day' => '', 'month' => '', 'year' => ''])->assertRedirect('/date-of-birth');
+    $this->post('/where-you-will-fish', ['country' => ''])->assertRedirect('/where-you-will-fish');
+    $this->post('/email', ['email' => 'not-an-email'])->assertRedirect('/email');
 });
 
 it('covers parity helpers catalogue and fixture loader wrappers', function (): void {
@@ -105,8 +93,8 @@ it('covers parity helpers catalogue and fixture loader wrappers', function (): v
 
     expect((string) new SafeString('<em>ok</em>'))->toBe('<em>ok</em>');
     expect(Journey::step('nope'))->toBeNull();
-    expect(Journey::isOptional('evidence'))->toBeTrue();
-    expect(Journey::isOptional('name'))->toBeFalse();
+    expect(Journey::nextStep('nope'))->toBeNull();
+    expect(Journey::previousStep('nope'))->toBeNull();
 });
 
 it('covers baseline policy edge cases', function (): void {
@@ -275,12 +263,23 @@ it('hides the catalogue when demos are disabled', function (): void {
     $this->get('/')->assertOk();
 });
 
-it('covers completed task list evidence upload and invalid journey steps', function (): void {
-    $this->post('/name', ['firstName' => 'Sam', 'lastName' => 'Smith'])->assertRedirect('/task-list');
-    $this->get('/task-list')->assertOk()->assertSee('Completed', false);
+it('covers change-from-check-answers return and invalid journey steps', function (): void {
+    $this->post('/licence-length', ['licenceLength' => '12-months'])->assertRedirect('/name');
+    $this->post('/name', ['fullName' => 'Sam Smith'])->assertRedirect('/date-of-birth');
+    $this->post('/date-of-birth', ['day' => '1', 'month' => '2', 'year' => '1990'])->assertRedirect('/where-you-will-fish');
+    $this->post('/where-you-will-fish', ['country' => 'Wales'])->assertRedirect('/email');
+    $this->post('/email', ['email' => 'sam@example.com'])->assertRedirect('/check-answers');
 
-    $file = UploadedFile::fake()->create('proof.pdf', 100, 'application/pdf');
-    $this->post('/evidence', ['evidence' => $file])->assertRedirect('/task-list');
+    $this->get('/name?return=check-answers')->assertOk()->assertSee('href="/check-answers"', false);
+    $this->post('/name', [
+        'fullName' => 'Sam Smith',
+        'returnTo' => 'check-answers',
+    ])->assertRedirect('/check-answers');
+
+    $this->post('/name', [
+        'fullName' => '',
+        'returnTo' => 'check-answers',
+    ])->assertRedirect('/name?return=check-answers');
 
     $controller = app(JourneyController::class);
     $request = Request::create('/nope', 'GET');

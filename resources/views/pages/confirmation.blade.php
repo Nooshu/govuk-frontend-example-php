@@ -1,8 +1,8 @@
 @component('layouts.govuk', ['pageTitle' => $pageTitle])
   {!! \App\Govuk\Renderer::render('panel', [
     'titleText' => 'Application complete',
-    'html' => 'Your reference number<br><strong>'.e($app->reference).'</strong>',
+    'html' => 'Your example reference number<br><strong>'.e($app->reference).'</strong>',
   ]) !!}
-  <p class="govuk-body">We have sent a confirmation email to {{ $app->email }}.</p>
-  <p class="govuk-body"><a class="govuk-link" href="/">Return to the start</a></p>
+  <p class="govuk-body">This is a fictional example. Nobody will send you a fishing rod licence.</p>
+  <p class="govuk-body"><a class="govuk-link" href="/components">Back to the component list</a></p>
 @endcomponent

@@ -10,7 +10,7 @@
   <p class="govuk-body-l">Use this service to apply for a licence to fish with a rod.</p>
   {!! \App\Govuk\Renderer::render('button', [
     'text' => 'Start now',
-    'href' => '/task-list',
+    'href' => '/licence-length',
     'isStartButton' => true,
   ]) !!}
   <p class="govuk-body">Applying takes about 10 minutes.</p>

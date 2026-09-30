@@ -1,6 +1,6 @@
 # Example service
 
-**Apply for a rod fishing licence** is the reference GOV.UK service in this repository. It is an example. It does not take payment, send email, or issue a licence.
+**Apply for a fishing rod licence** is the reference GOV.UK service in this repository. It is an example. It does not take payment, send email, or issue a licence.
 
 Every HTML page shows an **Important** notification banner (“This is a live demo. It is not a real government service.”), styled yellow via `.app-demo-banner`, and a phase banner that repeats that it is a demonstration. Search engines are told to stay away: `meta robots` and `X-Robots-Tag` are `noindex, nofollow`, and `/robots.txt` disallows all paths.
 
@@ -23,19 +23,18 @@ Public demo hosting: [deploying-on-render.md](deploying-on-render.md).
 ## Start to confirmation
 
 1. Start at `/` (English) or `/cy` (Welsh start page only). Choose **Start now**.
-2. The task list at `/task-list` links to each question.
-3. Answer the questions in order: name, date of birth, email, contact preference, where you will fish, licence length, start month, address, evidence (optional), additional details (optional), and password.
-4. Check your answers at `/check-answers`. Change links return to a question.
-5. Submit. The confirmation page at `/confirmation` shows a reference. The password is not shown.
+2. Answer the questions in order: licence length, full name, date of birth, where you will fish, and email.
+3. Check your answers at `/check-answers`. Change links return to a question.
+4. Accept and continue. The confirmation page at `/confirmation` shows an example reference.
 
-Invalid answers stay on the same question, with an error summary and the values you entered. You cannot open confirmation until the required questions are complete.
+Invalid answers stay on the same question, with an error summary and the values you entered. You cannot open confirmation until the questions are complete.
 
 ## Pages
 
 | Path                         | What it shows                                                                |
 | ---------------------------- | ---------------------------------------------------------------------------- |
 | `/` and `/cy`                | Start page                                                                   |
-| `/task-list`                 | Task list                                                                    |
+| `/licence-length` … `/email` | Question pages, then check your answers and confirmation                     |
 | `/components`                | Component catalogue (links only) when demos are on                           |
 | `/components/{name}`         | One component: PHP HTML for a fixture, parity banner only when match is true |
 | `/components/{name}/fixture` | Raw HTML fragment                                                            |

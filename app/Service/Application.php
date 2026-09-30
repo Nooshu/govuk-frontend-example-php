@@ -6,9 +6,9 @@ namespace App\Service;
 
 final class Application
 {
-    public string $firstName = '';
+    public string $licenceLength = '';
 
-    public string $lastName = '';
+    public string $fullName = '';
 
     public string $day = '';
 
@@ -16,32 +16,9 @@ final class Application
 
     public string $year = '';
 
+    public string $country = '';
+
     public string $email = '';
-
-    public string $contactBy = '';
-
-    public string $telephone = '';
-
-    /** @var list<string> */
-    public array $regions = [];
-
-    public string $licenceLength = '';
-
-    public string $startMonth = '';
-
-    public string $addressLine1 = '';
-
-    public string $addressLine2 = '';
-
-    public string $town = '';
-
-    public string $postcode = '';
-
-    public string $evidenceFilename = '';
-
-    public string $additionalDetails = '';
-
-    public bool $passwordCreated = false;
 
     public bool $submitted = false;
 

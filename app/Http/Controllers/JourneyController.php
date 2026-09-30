@@ -13,32 +13,6 @@ use Illuminate\View\View;
 
 final class JourneyController extends Controller
 {
-    public function taskList(Request $request): View
-    {
-        $app = $this->application($request);
-        $items = [];
-        foreach (Journey::STEPS as $step) {
-            $status = 'Not started';
-            $classes = 'govuk-tag--blue';
-            if ($app->isCompleted($step['id'])) {
-                $status = 'Completed';
-                $classes = '';
-            }
-            $items[] = [
-                'title' => ['text' => $step['heading']],
-                'href' => $step['path'],
-                'status' => ['tag' => ['text' => $status, 'classes' => $classes]],
-            ];
-        }
-
-        return view('pages.task-list', [
-            'pageTitle' => 'Your application – '.config('govuk.service_name'),
-            'taskListHtml' => Renderer::render('task-list', ['idPrefix' => 'licence', 'items' => $items]),
-            'beforeContent' => Renderer::render('back-link', ['href' => '/']),
-            'canCheck' => Journey::requiredComplete($app),
-        ]);
-    }
-
     public function show(Request $request, string $step): View
     {
         $stepDef = Journey::step($step);
@@ -47,13 +21,17 @@ final class JourneyController extends Controller
         }
         $app = $this->application($request);
         $errors = session('errors_'.$step, []);
+        $returnTo = $request->query('return') === 'check-answers' ? 'check-answers' : null;
+        $previous = Journey::previousStep($step);
+        $backHref = $returnTo !== null ? '/check-answers' : ($previous['path'] ?? '/');
 
         return view('pages.question', [
             'pageTitle' => $stepDef['heading'].' – '.config('govuk.service_name'),
             'step' => $stepDef,
             'app' => $app,
             'errors' => $errors,
-            'beforeContent' => Renderer::render('back-link', ['href' => '/task-list']),
+            'returnTo' => $returnTo,
+            'beforeContent' => Renderer::render('back-link', ['href' => $backHref]),
         ]);
     }
 
@@ -64,39 +42,67 @@ final class JourneyController extends Controller
             abort(404);
         }
         $app = $this->application($request);
-        $errors = $this->validateStep($step, $request, $app);
+        $errors = $this->validateStep($step, $request);
         if ($errors !== []) {
-            return redirect($stepDef['path'])->with('errors_'.$step, $errors)->withInput();
+            $location = $stepDef['path'];
+            if ($request->input('returnTo') === 'check-answers') {
+                $location .= '?return=check-answers';
+            }
+
+            return redirect($location)->with('errors_'.$step, $errors)->withInput();
         }
         $this->applyStep($step, $request, $app);
         $app->markCompleted($step);
         $this->save($request, $app);
 
-        return redirect('/task-list');
+        if ($request->input('returnTo') === 'check-answers') {
+            return redirect('/check-answers');
+        }
+
+        $next = Journey::nextStep($step);
+
+        return redirect($next['path'] ?? '/check-answers');
     }
 
     public function checkAnswers(Request $request): View|RedirectResponse
     {
         $app = $this->application($request);
-        if (! Journey::requiredComplete($app)) {
-            return redirect('/task-list');
+        if ($app->submitted) {
+            return redirect('/confirmation');
         }
+        $incomplete = Journey::firstIncompleteStep($app);
+        if ($incomplete !== null) {
+            return redirect($incomplete['path']);
+        }
+
+        $dob = trim($app->day.' '.$app->month.' '.$app->year);
 
         return view('pages.check-answers', [
             'pageTitle' => 'Check your answers – '.config('govuk.service_name'),
             'app' => $app,
-            'beforeContent' => Renderer::render('back-link', ['href' => '/task-list']),
+            'rows' => [
+                $this->summaryRow('Licence length', Journey::lengthLabel($app->licenceLength), '/licence-length', 'licence length'),
+                $this->summaryRow('Name', $app->fullName, '/name', 'name'),
+                $this->summaryRow('Date of birth', $dob, '/date-of-birth', 'date of birth'),
+                $this->summaryRow('Where you will fish', $app->country, '/where-you-will-fish', 'where you will fish'),
+                $this->summaryRow('Email address', $app->email, '/email', 'email address'),
+            ],
+            'beforeContent' => Renderer::render('back-link', ['href' => '/email']),
         ]);
     }
 
     public function submitAnswers(Request $request): RedirectResponse
     {
         $app = $this->application($request);
-        if (! Journey::requiredComplete($app)) {
-            return redirect('/task-list');
+        if ($app->submitted) {
+            return redirect('/confirmation');
+        }
+        $incomplete = Journey::firstIncompleteStep($app);
+        if ($incomplete !== null) {
+            return redirect($incomplete['path']);
         }
         $app->submitted = true;
-        $app->reference = 'RFL-'.strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
+        $app->reference = Journey::createReference();
         $this->save($request, $app);
 
         return redirect('/confirmation');
@@ -106,7 +112,7 @@ final class JourneyController extends Controller
     {
         $app = $this->application($request);
         if (! $app->submitted) {
-            return redirect('/task-list');
+            return redirect('/');
         }
 
         return view('pages.confirmation', [
@@ -134,80 +140,50 @@ final class JourneyController extends Controller
     /**
      * @return array<string, string>
      */
-    private function validateStep(string $stepId, Request $request, Application $app): array
+    private function validateStep(string $stepId, Request $request): array
     {
         $errors = [];
         switch ($stepId) {
-            case 'name':
-                if (trim((string) $request->input('firstName')) === '') {
-                    $errors['firstName'] = 'Enter your first name';
+            case 'licence-length':
+                $value = (string) $request->input('licenceLength');
+                $valid = false;
+                foreach (Journey::LICENCE_LENGTHS as $length) {
+                    if ($length['value'] === $value) {
+                        $valid = true;
+                        break;
+                    }
                 }
-                if (trim((string) $request->input('lastName')) === '') {
-                    $errors['lastName'] = 'Enter your last name';
+                if (! $valid) {
+                    $errors['licenceLength'] = 'Select how long you need the licence for';
+                }
+                break;
+            case 'name':
+                $name = trim((string) $request->input('fullName'));
+                if (strlen($name) < 2) {
+                    $errors['fullName'] = 'Enter your full name';
+                } elseif (strlen($name) > 100) {
+                    $errors['fullName'] = 'Full name must be 100 characters or fewer';
                 }
                 break;
             case 'date-of-birth':
-                foreach (['day' => 'day', 'month' => 'month', 'year' => 'year'] as $field => $label) {
-                    if (trim((string) $request->input($field)) === '') {
-                        $errors[$field] = 'Enter a '.$label;
-                    }
+                $day = trim((string) $request->input('day'));
+                $month = trim((string) $request->input('month'));
+                $year = trim((string) $request->input('year'));
+                $dobError = $this->validateDateOfBirth($day, $month, $year);
+                if ($dobError !== null) {
+                    $errors['date-of-birth'] = $dobError;
+                }
+                break;
+            case 'where-you-will-fish':
+                $country = (string) $request->input('country');
+                if (! in_array($country, Journey::COUNTRIES, true)) {
+                    $errors['country'] = 'Select where you will fish';
                 }
                 break;
             case 'email':
                 $email = trim((string) $request->input('email'));
-                if ($email === '' || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (! preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]+$/', $email)) {
                     $errors['email'] = 'Enter an email address in the correct format, like name@example.com';
-                }
-                break;
-            case 'contact-preference':
-                if (! in_array($request->input('contactBy'), ['email', 'telephone'], true)) {
-                    $errors['contactBy'] = 'Select how we should contact you';
-                }
-                if ($request->input('contactBy') === 'telephone' && trim((string) $request->input('telephone')) === '') {
-                    $errors['telephone'] = 'Enter a telephone number';
-                }
-                break;
-            case 'where-you-will-fish':
-                $regions = $request->input('regions', []);
-                if (! is_array($regions) || $regions === []) {
-                    $errors['regions'] = 'Select at least one region';
-                }
-                break;
-            case 'licence-length':
-                if (! in_array($request->input('licenceLength'), ['1-day', '8-day', '12-month'], true)) {
-                    $errors['licenceLength'] = 'Select a licence length';
-                }
-                break;
-            case 'start-month':
-                if (trim((string) $request->input('startMonth')) === '') {
-                    $errors['startMonth'] = 'Enter a start month';
-                }
-                break;
-            case 'address':
-                if (trim((string) $request->input('addressLine1')) === '') {
-                    $errors['addressLine1'] = 'Enter address line 1';
-                }
-                if (trim((string) $request->input('town')) === '') {
-                    $errors['town'] = 'Enter a town or city';
-                }
-                if (trim((string) $request->input('postcode')) === '') {
-                    $errors['postcode'] = 'Enter a postcode';
-                }
-                break;
-            case 'evidence':
-                // optional
-                break;
-            case 'additional-details':
-                // optional
-                break;
-            case 'create-a-password':
-                $password = (string) $request->input('password');
-                $confirm = (string) $request->input('confirmPassword');
-                if (strlen($password) < 8) {
-                    $errors['password'] = 'Enter a password that is at least 8 characters';
-                }
-                if ($password !== $confirm) {
-                    $errors['confirmPassword'] = 'Enter the same password again';
                 }
                 break;
         }
@@ -215,56 +191,71 @@ final class JourneyController extends Controller
         return $errors;
     }
 
+    private function validateDateOfBirth(string $day, string $month, string $year): ?string
+    {
+        if ($day === '' || $month === '' || $year === '') {
+            return 'Enter your date of birth';
+        }
+        if (! preg_match('/^\d{1,2}$/', $day) || ! preg_match('/^\d{1,2}$/', $month) || ! preg_match('/^\d{4}$/', $year)) {
+            return 'Enter a real date of birth';
+        }
+        $dayNumber = (int) $day;
+        $monthNumber = (int) $month;
+        $yearNumber = (int) $year;
+        if (! checkdate($monthNumber, $dayNumber, $yearNumber)) {
+            return 'Enter a real date of birth';
+        }
+        $dob = new \DateTimeImmutable(sprintf('%04d-%02d-%02d', $yearNumber, $monthNumber, $dayNumber));
+        $today = new \DateTimeImmutable('today');
+        if ($dob > $today) {
+            return 'Date of birth must be in the past';
+        }
+        $age = $today->diff($dob)->y;
+        if ($age < 13) {
+            return 'You must be at least 13 to use this example';
+        }
+
+        return null;
+    }
+
     private function applyStep(string $stepId, Request $request, Application $app): void
     {
         switch ($stepId) {
+            case 'licence-length':
+                $app->licenceLength = (string) $request->input('licenceLength');
+                break;
             case 'name':
-                $app->firstName = trim((string) $request->input('firstName'));
-                $app->lastName = trim((string) $request->input('lastName'));
+                $app->fullName = trim((string) $request->input('fullName'));
                 break;
             case 'date-of-birth':
                 $app->day = trim((string) $request->input('day'));
                 $app->month = trim((string) $request->input('month'));
                 $app->year = trim((string) $request->input('year'));
                 break;
+            case 'where-you-will-fish':
+                $app->country = (string) $request->input('country');
+                break;
             case 'email':
                 $app->email = trim((string) $request->input('email'));
                 break;
-            case 'contact-preference':
-                $app->contactBy = (string) $request->input('contactBy');
-                $app->telephone = trim((string) $request->input('telephone'));
-                break;
-            case 'where-you-will-fish':
-                $regions = $request->input('regions', []);
-                $app->regions = is_array($regions) ? array_values(array_map('strval', $regions)) : [];
-                break;
-            case 'licence-length':
-                $app->licenceLength = (string) $request->input('licenceLength');
-                break;
-            case 'start-month':
-                $app->startMonth = trim((string) $request->input('startMonth'));
-                break;
-            case 'address':
-                $app->addressLine1 = trim((string) $request->input('addressLine1'));
-                $app->addressLine2 = trim((string) $request->input('addressLine2'));
-                $app->town = trim((string) $request->input('town'));
-                $app->postcode = trim((string) $request->input('postcode'));
-                break;
-            case 'evidence':
-                $file = $request->file('evidence');
-                if ($file !== null) {
-                    $ext = strtolower($file->getClientOriginalExtension());
-                    if (in_array($ext, ['pdf', 'png', 'jpg', 'jpeg'], true)) {
-                        $app->evidenceFilename = $file->getClientOriginalName();
-                    }
-                }
-                break;
-            case 'additional-details':
-                $app->additionalDetails = trim((string) $request->input('additionalDetails'));
-                break;
-            case 'create-a-password':
-                $app->passwordCreated = true;
-                break;
         }
+    }
+
+    /**
+     * @return array{key: array{text: string}, value: array{text: string}, actions: array{items: list<array{href: string, text: string, visuallyHiddenText: string}>}}
+     */
+    private function summaryRow(string $key, string $value, string $href, string $hidden): array
+    {
+        return [
+            'key' => ['text' => $key],
+            'value' => ['text' => $value],
+            'actions' => [
+                'items' => [[
+                    'href' => $href.'?return=check-answers',
+                    'text' => 'Change',
+                    'visuallyHiddenText' => $hidden,
+                ]],
+            ],
+        ];
     }
 }

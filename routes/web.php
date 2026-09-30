@@ -33,15 +33,14 @@ Route::middleware([BaselineHeaders::class])->group(function (): void {
     Route::post('/cookie-choices', [StaticPageController::class, 'cookieChoices']);
     Route::get('/examples/exit-this-page', [StaticPageController::class, 'exitThisPage']);
 
-    Route::get('/task-list', [JourneyController::class, 'taskList']);
     Route::get('/check-answers', [JourneyController::class, 'checkAnswers']);
     Route::post('/check-answers', [JourneyController::class, 'submitAnswers']);
     Route::get('/confirmation', [JourneyController::class, 'confirmation']);
 
     Route::get('/{step}', [JourneyController::class, 'show'])
-        ->where('step', 'name|date-of-birth|email|contact-preference|where-you-will-fish|licence-length|start-month|address|evidence|additional-details|create-a-password');
+        ->where('step', 'licence-length|name|date-of-birth|where-you-will-fish|email');
     Route::post('/{step}', [JourneyController::class, 'store'])
-        ->where('step', 'name|date-of-birth|email|contact-preference|where-you-will-fish|licence-length|start-month|address|evidence|additional-details|create-a-password');
+        ->where('step', 'licence-length|name|date-of-birth|where-you-will-fish|email');
 });
 
 if (config('govuk.demos_enabled')) {

@@ -15,48 +15,57 @@ it('serves the start page with noindex', function (): void {
     $response->assertOk();
     $response->assertSee('noindex, nofollow', false);
     $response->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+    $response->assertSee('Apply for a fishing rod licence', false);
+    $response->assertSee('href="/licence-length"', false);
 });
 
 it('walks the licence journey to confirmation', function (): void {
     $this->get('/')->assertOk();
-    $this->get('/task-list')->assertOk();
 
     $answers = [
-        'name' => ['firstName' => 'Sam', 'lastName' => 'Smith'],
-        'date-of-birth' => ['day' => '1', 'month' => '2', 'year' => '1990'],
-        'email' => ['email' => 'sam@example.com'],
-        'contact-preference' => ['contactBy' => 'email'],
-        'where-you-will-fish' => ['regions' => ['england']],
         'licence-length' => ['licenceLength' => '1-day'],
-        'start-month' => ['startMonth' => 'March 2026'],
-        'address' => [
-            'addressLine1' => '1 High Street',
-            'addressLine2' => '',
-            'town' => 'Bristol',
-            'postcode' => 'BS1 1AA',
-        ],
-        'evidence' => [],
-        'additional-details' => ['additionalDetails' => ''],
-        'create-a-password' => ['password' => 'password1', 'confirmPassword' => 'password1'],
+        'name' => ['fullName' => 'Sam Smith'],
+        'date-of-birth' => ['day' => '1', 'month' => '2', 'year' => '1990'],
+        'where-you-will-fish' => ['country' => 'England'],
+        'email' => ['email' => 'sam@example.com'],
     ];
 
+    $paths = array_keys($answers);
     foreach ($answers as $step => $payload) {
         $this->get('/'.$step)->assertOk();
-        $this->post('/'.$step, $payload)->assertRedirect('/task-list');
+        $index = array_search($step, $paths, true);
+        $next = $paths[$index + 1] ?? null;
+        $expected = $next !== null ? '/'.$next : '/check-answers';
+        $this->post('/'.$step, $payload)->assertRedirect($expected);
     }
 
-    $this->get('/check-answers')->assertOk();
+    $check = $this->get('/check-answers');
+    $check->assertOk();
+    $check->assertSee('1 day', false);
+    $check->assertSee('Sam Smith', false);
+    $check->assertSee('1 2 1990', false);
+    $check->assertSee('England', false);
+    $check->assertSee('Accept and continue', false);
+
     $this->post('/check-answers')->assertRedirect('/confirmation');
-    $this->get('/confirmation')->assertOk()->assertSee('Application complete');
+    $confirmation = $this->get('/confirmation');
+    $confirmation->assertOk();
+    $confirmation->assertSee('Application complete', false);
+    $confirmation->assertSee('Your example reference number', false);
+    $confirmation->assertSee('Nobody will send you a fishing rod licence', false);
+    $confirmation->assertSee('href="/components"', false);
 });
 
 it('marks required steps complete in the journey helper', function (): void {
     $app = new Application;
     foreach (Journey::STEPS as $step) {
-        if ($step['optional']) {
-            continue;
-        }
         $app->markCompleted($step['id']);
     }
     expect(Journey::requiredComplete($app))->toBeTrue();
+    expect(Journey::firstIncompleteStep($app))->toBeNull();
+    expect(Journey::nextStep('email'))->toBeNull();
+    expect(Journey::previousStep('licence-length'))->toBeNull();
+    expect(Journey::previousStep('name')['id'])->toBe('licence-length');
+    expect(Journey::lengthLabel('12-months'))->toBe('12 months');
+    expect(Journey::createReference())->toMatch('/^FR\d{8}$/');
 });

@@ -28,7 +28,7 @@ Open <http://127.0.0.1:8000>.
 ## What you get
 
 1. **Component catalogue** at `/components` — every Frontend component with fixture versions and a live preview. The green “HTML matches the fixture” banner appears **only** when PHP output equals the official fixture HTML.
-2. **Rod fishing licence journey** from Start now through confirmation — GDS form patterns (`novalidate`, error summary, retained values).
+2. **Fishing rod licence journey** from Start now through confirmation — GDS form patterns (`novalidate`, error summary, retained values).
 
 ## Tests
 
