@@ -17,8 +17,10 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      # Must be a Laravel key from `php artisan key:generate --show`
+      # (base64:…, 32 decoded bytes). Render generateValue is the wrong length.
       - key: APP_KEY
-        generateValue: true
+        sync: false
       - key: LOG_CHANNEL
         value: stderr
       - key: SESSION_DRIVER
