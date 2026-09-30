@@ -31,6 +31,7 @@ Route::middleware([BaselineHeaders::class])->group(function (): void {
     Route::get('/cookies', [StaticPageController::class, 'cookies']);
     Route::post('/cookies', [StaticPageController::class, 'saveCookies']);
     Route::post('/cookie-choices', [StaticPageController::class, 'cookieChoices']);
+    Route::get('/examples', [StaticPageController::class, 'examples']);
     Route::get('/examples/exit-this-page', [StaticPageController::class, 'exitThisPage']);
 
     Route::get('/check-answers', [JourneyController::class, 'checkAnswers']);

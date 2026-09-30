@@ -44,19 +44,24 @@
       </main>
     </div>
     <footer class="govuk-template__footer">
+      @php
+        $footerItems = [
+          ['href' => '/help', 'text' => 'Help'],
+          ['href' => '/fees', 'text' => 'Licence fees'],
+          ['href' => '/updates', 'text' => 'Service updates'],
+          ['href' => '/guidance', 'text' => 'Guidance'],
+          ['href' => '/cookies', 'text' => 'Cookies'],
+          ['href' => '/accessibility', 'text' => 'Accessibility'],
+          ['href' => '/about', 'text' => 'About this example'],
+        ];
+        if ($demosEnabled ?? false) {
+          $footerItems[] = ['href' => '/components', 'text' => 'Component catalogue'];
+          $footerItems[] = ['href' => '/examples', 'text' => 'Example pages'];
+        }
+      @endphp
       {!! \App\Govuk\Renderer::render('footer', [
         'meta' => [
-          'items' => [
-            ['href' => '/help', 'text' => 'Help'],
-            ['href' => '/fees', 'text' => 'Licence fees'],
-            ['href' => '/updates', 'text' => 'Service updates'],
-            ['href' => '/guidance', 'text' => 'Guidance'],
-            ['href' => '/cookies', 'text' => 'Cookies'],
-            ['href' => '/accessibility', 'text' => 'Accessibility'],
-            ['href' => '/about', 'text' => 'About this example'],
-            ['href' => '/components', 'text' => 'Component catalogue'],
-            ['href' => '/examples/exit-this-page', 'text' => 'Example pages'],
-          ],
+          'items' => $footerItems,
         ],
       ]) !!}
     </footer>

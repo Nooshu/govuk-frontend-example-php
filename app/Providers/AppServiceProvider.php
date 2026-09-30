@@ -30,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
                 'jsEnabledSnippet' => $policy->jsEnabledSnippet(),
                 'serviceName' => config('govuk.service_name'),
                 'frontendVersion' => config('govuk.frontend_version'),
+                'demosEnabled' => (bool) config('govuk.demos_enabled'),
             ]);
         });
     }

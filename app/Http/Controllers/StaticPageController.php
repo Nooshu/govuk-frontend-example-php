@@ -135,8 +135,34 @@ final class StaticPageController extends Controller
         return view('pages.simple', [
             'pageTitle' => 'Exit this page example – '.config('govuk.service_name'),
             'heading' => 'Exit this page',
-            'bodyHtml' => Renderer::render('exit-this-page', []),
-            'beforeContent' => Renderer::render('back-link', ['href' => '/']),
+            'bodyHtml' => Renderer::render('exit-this-page', []).
+                Renderer::render('warning-text', [
+                    'text' => 'Use this component only on services where someone may be in danger.',
+                    'iconFallbackText' => 'Warning',
+                ]).
+                Renderer::render('inset-text', [
+                    'text' => 'This page is an example of the component. It is not part of the rod licence application. Choosing the button leaves this example and opens the BBC weather forecast.',
+                ]).
+                '<p class="govuk-body">The button is the first thing on the page, which matches the component guidance.</p>',
+            'beforeContent' => Renderer::render('back-link', ['text' => 'Back', 'href' => '/examples']),
+        ]);
+    }
+
+    public function examples(): View
+    {
+        return view('pages.simple', [
+            'pageTitle' => 'Example pages – '.config('govuk.service_name'),
+            'heading' => 'Example pages',
+            'bodyHtml' => '<p class="govuk-body">These pages show GOV.UK patterns that are not steps in the rod licence application.</p>'.
+                '<ul class="govuk-list">'.
+                '<li><a class="govuk-link" href="/examples/exit-this-page">Exit this page</a></li>'.
+                '</ul>',
+            'beforeContent' => Renderer::render('breadcrumbs', [
+                'items' => [
+                    ['href' => '/', 'text' => 'Home'],
+                    ['text' => 'Example pages'],
+                ],
+            ]),
         ]);
     }
 }

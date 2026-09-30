@@ -32,7 +32,7 @@ it('serves the component catalogue and fixture fragment', function (): void {
 
 it('serves Welsh start and supporting pages', function (): void {
     $this->get('/cy')->assertOk();
-    foreach (['/fees', '/help', '/guidance', '/accessibility', '/about', '/updates', '/updates?page=2', '/cookies', '/examples/exit-this-page'] as $path) {
+    foreach (['/fees', '/help', '/guidance', '/accessibility', '/about', '/updates', '/updates?page=2', '/cookies', '/examples', '/examples/exit-this-page'] as $path) {
         $this->get($path)->assertOk();
     }
     $this->post('/cookies', ['cookies' => 'yes'])->assertRedirect('/cookies');
