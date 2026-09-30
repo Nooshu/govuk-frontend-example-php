@@ -1,6 +1,6 @@
 # Frontend security
 
-Shared OWASP response-header baseline for this template and every language line that syncs from it. The machine-readable contract is [`baseline/policy.json`](../baseline/policy.json). Node services call [`baseline/index.mjs`](../baseline/index.mjs). Other languages apply the same rules and can diff their headers against the Node helper.
+Shared OWASP response-header baseline. The machine-readable contract is [`baseline/policy.json`](../baseline/policy.json). This PHP app applies it via `App\Baseline\Policy` and `BaselineHeaders` middleware. The Node helper in [`baseline/index.mjs`](../baseline/index.mjs) remains the oracle for shared baseline tests.
 
 Authoritative sources:
 
@@ -11,14 +11,12 @@ Authoritative sources:
 
 Performance cache rules live in [frontend-performance.md](frontend-performance.md). Encoding and `html` options stay in [priorities.md](priorities.md) and [creating-components.md](creating-components.md).
 
-## Language lines
+## How this app applies it
 
-Sync the whole `baseline/` directory with this repo. Do not fork a weaker header set in the language line.
-
-| Stack                      | How to apply it                                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Node (TypeScript included) | `import { applyResponseHeaders } from './baseline/index.mjs'` on every response                                    |
-| Any other language         | Read `baseline/policy.json` and match `buildResponseHeaders`. Use the Node helper as the oracle when you add tests |
+| Layer         | Mechanism                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| PHP / Laravel | `App\Baseline\Policy` + `App\Http\Middleware\BaselineHeaders` on HTML routes; `AssetController` for fingerprinted assets |
+| Node tests    | `baseline/index.mjs` coverage in `npm run test:baseline`                                                                 |
 
 ```sh
 node --input-type=module -e "import { buildResponseHeaders } from './baseline/index.mjs'; console.log(JSON.stringify(buildResponseHeaders({ kind: 'document', secureTransport: true }), null, 2))"

@@ -2,10 +2,19 @@
   "config": {
     "MD013": false,
     "MD024": { "siblings_only": true },
+    "MD025": false,
     "MD033": false,
     "MD034": false,
     "MD036": false,
     "MD041": false,
   },
-  "globs": ["**/*.md", "**/*.mdc", "!node_modules/**", "!.git/**"],
+  "globs": [
+    "**/*.md",
+    "**/*.mdc",
+    "!node_modules/**",
+    "!vendor/**",
+    "!storage/**",
+    "!bootstrap/cache/**",
+    "!.git/**",
+  ],
 }
