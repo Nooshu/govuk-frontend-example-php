@@ -35,7 +35,8 @@ ENV APP_ENV=production \
 
 RUN mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache \
-    && php artisan package:discover --ansi || true
+    && php artisan package:discover --ansi || true \
+    && chmod +x scripts/docker-entrypoint.sh
 
 EXPOSE 10000
-CMD php -d variables_order=EGPCS artisan serve --host=0.0.0.0 --port=${PORT:-10000}
+CMD ["./scripts/docker-entrypoint.sh"]
