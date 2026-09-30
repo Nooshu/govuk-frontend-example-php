@@ -1,42 +1,47 @@
-# GOV.UK Frontend example
+# GOV.UK Frontend example — PHP
 
-**Base template** for **GDS-compliant** government frontends: standardised backends (TypeScript, Go, Python, …) + **[GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)** (macros / fixtures as the HTML contract) — **no** React/Vue/Angular/Svelte for UI. Official fixtures enable **100% HTML parity** testing of backend output. Node-adjacent lines may call Nunjucks macros directly; other languages generate HTML natively.
+PHP **Laravel** + **Blade** example that server-renders [GOV.UK Frontend](https://frontend.design-system.service.gov.uk/) components with **100% official fixture HTML parity**.
 
-**Implementation language: TBD** — see [`docs/tech-stack.md`](docs/tech-stack.md).
+This is a demonstration. It is not a live government service.
 
-## Language lines
+## Stack
 
-Specialised repos that track this template’s shared playbooks via a `template` remote + path sync:
+- PHP 8.4+ / Laravel 12 / Blade / Composer / Pest
+- GOV.UK Frontend **6.5.1** (pinned via npm)
+- Sass pipeline (`styles/` → `govuk-overrides.scss` last) — not the prebuilt dist CSS
+- Shared [`baseline/`](baseline/) security and cache headers
 
-| Line              | Repository                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------- |
-| TypeScript (Node) | [Nooshu/govuk-frontend-example-typescript](https://github.com/Nooshu/govuk-frontend-example-typescript) |
-| Go                | [Nooshu/govuk-frontend-example-go](https://github.com/Nooshu/govuk-frontend-example-go)                 |
+See [`docs/tech-stack.md`](docs/tech-stack.md) and [`AGENTS.md`](AGENTS.md).
 
-## Priorities
-
-Frontend web performance → frontend security → reduced maintenance → accessibility → inclusive design.
-
-## Who should read what
-
-| You are…            | Start here                                                                                                                                                     |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Human developer** | [`docs/onboarding.md`](docs/onboarding.md) → [`CONTRIBUTING.md`](CONTRIBUTING.md) → [`docs/`](docs/README.md)                                                  |
-| **AI coding agent** | [`AGENTS.md`](AGENTS.md) → [`.cursor/skills/gds-compliant-frontend/`](.cursor/skills/gds-compliant-frontend/SKILL.md) → playbooks in [`docs/`](docs/README.md) |
-
-How docs are split for both audiences: [`docs/documentation-structure.md`](docs/documentation-structure.md).
-
-## Quick local checks (docs / Node tooling)
+## Quick start
 
 ```sh
-npm install
-npm run build:styles
-npm test
-npm run verify:docs
+npm ci
+composer install
+cp .env.example .env   # if needed; artisan key:generate
+php artisan key:generate
+npm start
 ```
 
-## Licence and security
+Open <http://127.0.0.1:8000>.
 
-- Code in this repository: [MIT License](LICENSE)
-- How to report vulnerabilities: [SECURITY.md](SECURITY.md)
-- GOV.UK Design System and Frontend are maintained by GDS; Crown copyright / OGL apply to GOV.UK content patterns as documented on GOV.UK.
+## What you get
+
+1. **Component catalogue** at `/components` — every Frontend component with fixture versions and a live preview. The green “HTML matches the fixture” banner appears **only** when PHP output equals the official fixture HTML.
+2. **Rod fishing licence journey** from Start now through confirmation — GDS form patterns (`novalidate`, error summary, retained values).
+
+## Tests
+
+```sh
+npm test
+```
+
+Runs Node baseline/Sass coverage gates and Pest, including byte-for-byte fixture parity for every shipped fixture.
+
+## Deploy
+
+Docker on Render free tier — [`docs/deploying-on-render.md`](docs/deploying-on-render.md).
+
+## Licence
+
+See [LICENSE](LICENSE).

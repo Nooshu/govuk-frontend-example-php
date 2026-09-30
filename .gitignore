@@ -78,3 +78,21 @@ temp/
 package-lock.json.bak
 yarn.lock.bak
 pnpm-lock.yaml.bak
+
+# Laravel
+/vendor/
+/node_modules/
+/public/storage
+/public/hot
+/storage/*.key
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+/dist/
+.tmp/

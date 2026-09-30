@@ -16,11 +16,11 @@ Canonical agent index: [`AGENTS.md`](../AGENTS.md). Doc map: [`README.md`](READM
 
 ## Audience cues
 
-| Cue in a doc                                            | Meaning                                 |
-| ------------------------------------------------------- | --------------------------------------- |
-| “Start here”, “Repo map”, “Troubleshooting”             | Human onboarding                        |
-| “Non-negotiables”, “Playbook”, “Do / don’t”, checklists | Agent-oriented (still useful to humans) |
-| “Stack note”, “TBD until language chosen”               | Applies to both; do not invent paths    |
+| Cue in a doc                                            | Meaning                                    |
+| ------------------------------------------------------- | ------------------------------------------ |
+| “Start here”, “Repo map”, “Troubleshooting”             | Human onboarding                           |
+| “Non-negotiables”, “Playbook”, “Do / don’t”, checklists | Agent-oriented (still useful to humans)    |
+| “Stack note”, “PHP / Laravel”                           | Recorded in [tech-stack.md](tech-stack.md) |
 
 ## Mandatory documentation for every change
 
@@ -47,11 +47,9 @@ When editing docs:
 
 ## Latest language best practices
 
-Applies to this template’s shared Node tooling **and** to language-line / service repos that sync from it:
-
-1. Until [tech-stack.md](tech-stack.md) names a wrapper language: stay language-agnostic for app structure; still use current Node/ESM practice for `baseline/`, Sass scripts, and fixture tooling.
-2. After a language is recorded: follow **that language’s latest** layout, typing, module, test, packaging, and CI norms for **all** new feature work and refactors.
-3. Prefer official or widely accepted current guides over blog posts that predate the pin (for example current TypeScript / Go / Python docs for the major version you record).
+1. Follow current **PHP 8.4+ / Laravel 12** layout, typing, Pest, Pint, and Larastan norms for all feature work ([tech-stack.md](tech-stack.md)).
+2. Shared Node tooling (`baseline/`, Sass scripts) follows current Node/ESM practice.
+3. Prefer official Laravel / PHP docs for the major versions you pin.
 4. Do not adopt a “best practice” that conflicts with Frontend macros, fixture parity, the performance/security baseline, or the Sass cascade.
 5. When best practices change upstream, update tech-stack notes and code in focused commits — documentation and implementation together.
 

@@ -6,14 +6,14 @@ Authoritative upstream: https://frontend.design-system.service.gov.uk/testing-yo
 
 ## What must be compared
 
-| Compare                                              | Required?              | Purpose                                                                           |
-| ---------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------- |
-| **Backend / library HTML → official fixture `html`** | **Yes — primary gate** | Proves the wrapper language’s interpretation of the component matches the release |
-| **Nunjucks macro HTML → stored fixture `html`**      | Yes — secondary        | Proves fixtures are not stale relative to the pinned Frontend macros              |
+| Compare                                         | Required?              | Purpose                                                              |
+| ----------------------------------------------- | ---------------------- | -------------------------------------------------------------------- |
+| **PHP HTML → official fixture `html`**          | **Yes — primary gate** | Proves the PHP renderer matches the release                          |
+| **Nunjucks macro HTML → stored fixture `html`** | Optional — secondary   | Proves fixtures are not stale relative to the pinned Frontend macros |
 
-**Do not** ship a setup that only compares Nunjucks macros to fixture HTML. That never exercises the backend language’s renderer. Language lines and services built from this template must run the **parity suite** against backend output for **every** fixture in every shipped component’s `fixtures.json` from the pinned GOV.UK Frontend release.
+**Do not** ship a setup that only compares Nunjucks macros to fixture HTML. Pest must run the **parity suite** against PHP `Renderer::render()` for **every** fixture. DomCrawler is used only to format failure diffs — never to pass tests.
 
-**Stacks:** Prefer generating HTML via **Nunjucks macros** from `govuk-frontend` when the language can call them. If the backend wraps or re-implements macros, parity still compares **that backend output** to official fixtures. The Nunjucks suite stays on **Node** with the pinned package.
+**Stack:** Native PHP HTML in `app/Govuk/`. Node is for `govuk-frontend` install, Sass, and baseline tests only — never request-time rendering.
 
 ## Why fixtures exist
 
@@ -29,7 +29,7 @@ Application and library code under test must maintain **100%** coverage of:
 - **branches**
 - **statements**
 
-Wire the language’s coverage tool so local verify and CI **fail** below 100% on all three. Do **not** normalise fixture HTML or skip parity cases to inflate coverage. Exclude only generated/vendor assets and explicit, documented exceptions (if any) in [tech-stack.md](tech-stack.md).
+Wire Pest so local verify and CI **fail** below 100% (`./vendor/bin/pest --coverage --min=100`) for `app/` excluding `app/Models`. Do **not** normalise fixture HTML or skip parity cases to inflate coverage. See [tech-stack.md](tech-stack.md).
 
 ## Layers
 
@@ -72,3 +72,7 @@ Previews render **one selected fixture**, show **library/backend HTML** beside o
 ## Adding tests for a new component
 
 Follow steps 8–9 in [creating-components.md](creating-components.md). Clone the closest sibling’s **backend parity** tests and Nunjucks render script; cover every fixture name in both layers.
+
+## PHP line
+
+Primary comparison is byte-for-byte string equality. Symfony DomCrawler may be used only to format failure diffs — never to decide a pass.

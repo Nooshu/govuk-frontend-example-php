@@ -1,0 +1,338 @@
+---
+description: Build a GOV.UK Frontend compatible server-rendered implementation using PHP, Laravel, and Blade
+alwaysApply: true
+---
+
+# Project goal
+
+Build a server-rendered UK government service using PHP, Laravel, and Blade that produces HTML compatible with GOV.UK Frontend.
+
+The project demonstrates that GOV.UK Frontend is not dependent on Nunjucks, Node.js, or a client-side frontend framework.
+
+Official GOV.UK Frontend fixtures for the pinned version define rendering correctness.
+
+Target 100% fixture parity for every implemented component.
+
+# Technology
+
+Use:
+
+- current supported PHP
+- Laravel
+- Blade
+- Composer
+- Pest
+- Symfony YAML
+- Symfony DomCrawler
+- Laravel Pint
+- appropriate static analysis such as PHPStan/Larastan
+
+Use strict types in application PHP where appropriate.
+
+# GOV.UK Frontend
+
+Pin an explicit GOV.UK Frontend version.
+
+Use its official:
+
+- CSS
+- JavaScript
+- fonts
+- images
+- assets
+- component fixtures
+- expected HTML
+
+Do not reimplement its CSS or JavaScript.
+
+# Component investigation
+
+Before implementing a component:
+
+1. inspect every upstream fixture
+2. inspect expected HTML
+3. inspect upstream Nunjucks where useful
+4. understand the complete component API
+5. design an idiomatic Laravel API
+6. implement it
+7. run all applicable fixtures
+
+Do not implement only the examples currently failing.
+
+# Component architecture
+
+Use Blade Components.
+
+Suggested structure:
+
+```text
+app/
+  View/
+    Components/
+      Govuk/
+        Button.php
+        Input.php
+        Radios.php
+        Checkboxes.php
+
+resources/
+  views/
+    components/
+      govuk/
+        button.blade.php
+        input.blade.php
+        radios.blade.php
+        checkboxes.blade.php
+
+tests/
+  Feature/
+  Unit/
+  Fixtures/
+```
+
+Use typed constructor parameters.
+
+Use readonly properties where appropriate.
+
+Component APIs should represent GOV.UK options while remaining idiomatic Laravel.
+
+Example:
+
+```blade
+<x-govuk.button type="submit">
+    Continue
+</x-govuk.button>
+```
+
+Keep HTTP controllers separate from component rendering.
+
+Components must be independently testable.
+
+# Rendering
+
+Use Blade.
+
+Do not use Nunjucks.
+
+Do not invoke Node.js to render production component HTML.
+
+Do not introduce extra markup for convenience.
+
+Keep complex application logic out of Blade templates.
+
+# Security and escaping
+
+Use Blade's escaped output syntax for normal values:
+
+```blade
+{{ $text }}
+```
+
+GOV.UK `text` options must be escaped.
+
+GOV.UK `html` options require explicit trusted HTML handling.
+
+Raw Blade output:
+
+```blade
+{!! $html !!}
+```
+
+must only be used when the value has explicitly been classified as trusted HTML.
+
+Never render arbitrary user-controlled data as raw HTML.
+
+Do not disable escaping to make fixtures pass.
+
+# Attributes
+
+Support arbitrary attributes where GOV.UK Frontend supports them.
+
+Use Laravel's safe attribute mechanisms where appropriate.
+
+Do not manually concatenate unsafe attribute strings.
+
+Preserve:
+
+- IDs
+- names
+- values
+- classes
+- roles
+- ARIA
+- data attributes
+- boolean attributes
+- form states
+
+# Fixture tests
+
+Use Symfony YAML to read fixtures where appropriate.
+
+For every fixture:
+
+1. load official fixture data
+2. map options into the Laravel component
+3. render the Blade component
+4. obtain expected GOV.UK HTML
+5. parse actual HTML
+6. parse expected HTML
+7. compare meaningful DOM structures
+8. output a useful diff when they differ
+
+Tests should be data-driven.
+
+Adding an upstream fixture should not normally require another bespoke test.
+
+# DOM comparison
+
+Use Symfony DomCrawler with an appropriate HTML parser.
+
+Do not rely solely on raw string equality.
+
+Normalise only semantically insignificant differences.
+
+Never hide differences involving:
+
+- elements
+- ordering
+- text
+- classes
+- IDs
+- attributes
+- values
+- ARIA
+- data attributes
+- form semantics
+- accessibility relationships
+
+Document normalisation rules.
+
+Test the comparator.
+
+Assume rendering is incorrect before changing comparison behaviour.
+
+# Testing
+
+Prefer Pest.
+
+Test:
+
+- every supported fixture
+- text escaping
+- trusted HTML
+- arbitrary attributes
+- classes
+- IDs
+- ARIA
+- errors
+- hints
+- nested content
+- form states
+- complex components
+
+# Forbidden shortcuts
+
+Never:
+
+- alter upstream fixtures
+- alter expected HTML
+- special-case fixture names
+- hard-code fixture output
+- copy expected fixture HTML into templates
+- weaken comparison rules to hide failures
+- invoke Nunjucks at runtime
+- invoke Node.js to render production component HTML
+- call another implementation at runtime
+- introduce React, Vue, Angular, Svelte, or another SPA framework for core rendering
+- recreate GOV.UK Frontend CSS
+- unnecessarily replace official GOV.UK Frontend JavaScript
+
+# Progressive enhancement
+
+The initial server response must contain the complete core journey.
+
+Use official GOV.UK Frontend JavaScript to enhance server-rendered markup.
+
+Do not use JavaScript to compensate for incorrect Blade rendering.
+
+# Dependency management
+
+Use Composer for PHP dependencies.
+
+Commit `composer.lock`.
+
+Pin dependencies appropriately.
+
+Keep the dependency surface small.
+
+Use established packages.
+
+Run dependency and vulnerability checks where appropriate.
+
+The project may use the JavaScript ecosystem solely where necessary to obtain/build official GOV.UK Frontend assets. Node.js must not be required for server-side component rendering.
+
+# Quality
+
+Use:
+
+- Laravel Pint
+- PHPStan/Larastan where appropriate
+- strict types
+- typed properties
+- readonly properties where useful
+
+Prefer:
+
+- straightforward Laravel conventions
+- simple Blade templates
+- explicit component APIs
+- composition
+
+Avoid:
+
+- HTML concatenation in PHP
+- uncontrolled raw Blade output
+- unnecessary service abstractions
+- unnecessary JavaScript
+- architecture copied from TypeScript
+
+# CI
+
+CI must:
+
+1. install locked dependencies
+2. run formatting checks
+3. run static analysis
+4. run tests
+5. run all fixture parity tests
+
+Fixture parity failures fail CI.
+
+# GOV.UK Frontend upgrades
+
+When upgrading:
+
+1. update the pinned GOV.UK Frontend version
+2. update fixtures to exactly that version
+3. run the existing implementation
+4. inspect parity failures
+5. update Laravel rendering where upstream behaviour changed
+6. rerun all tests
+
+Never change fixtures to preserve old output.
+
+# Definition of done
+
+A component is complete when:
+
+- Blade server-renders it
+- Nunjucks is not a runtime dependency
+- Node.js is not a runtime rendering dependency
+- official GOV.UK Frontend assets are used
+- all supported fixtures pass
+- escaping and trusted HTML are tested
+- accessibility markup matches
+- no fixture-specific hacks exist
+- CI passes
+
+Fixture parity, rather than visual similarity, defines compatibility.
