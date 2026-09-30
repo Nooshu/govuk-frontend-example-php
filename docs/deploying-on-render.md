@@ -19,6 +19,7 @@ Host the Laravel example service on [Render](https://render.com) as a public dem
 
 ### After deploy checklist
 
+- [ ] Set `APP_KEY` in the Render dashboard (see [Environment](#environment)) then redeploy or restart
 - [ ] `https://<service>.onrender.com/health` returns `ok`
 - [ ] Start page loads with GOV.UK styling (`/`)
 - [ ] Component catalogue works (`/components`) — Blueprint sets `DEMOS_ENABLED=true`
@@ -31,8 +32,24 @@ Host the Laravel example service on [Render](https://render.com) as a public dem
 | --------------- | ------------------------------------------------- |
 | `PORT`          | Injected by Render; artisan binds `0.0.0.0:$PORT` |
 | `DEMOS_ENABLED` | Blueprint sets `true`                             |
-| `APP_KEY`       | Generated on Render                               |
+| `APP_KEY`       | **Required** — set manually (see below)           |
 | `APP_ENV`       | `production`                                      |
+
+### `APP_KEY` (required)
+
+Laravel encrypts sessions/cookies with `AES-256-CBC`, which needs a **32-byte** key. Generate one locally:
+
+```bash
+php artisan key:generate --show
+```
+
+Paste the full value (including the `base64:` prefix) into Render → **Environment** → `APP_KEY`, then **Save** and restart the service.
+
+Do **not** use Render’s “generate value” for `APP_KEY`. That secret is the wrong length and causes:
+
+`Unsupported cipher or incorrect key length`
+
+Changing `APP_KEY` invalidates existing encrypted cookies/sessions (expected on a demo).
 
 HTTPS terminates at Render. The app trusts proxies (`X-Forwarded-Proto`).
 
