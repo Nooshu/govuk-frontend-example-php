@@ -15,4 +15,5 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm run verify
+      # Docs/format only — full PHP verify lives in ci.yml
+      - run: npm run verify:docs
