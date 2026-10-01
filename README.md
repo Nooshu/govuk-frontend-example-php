@@ -42,6 +42,8 @@ Runs Node baseline/Sass coverage gates and Pest, including byte-for-byte fixture
 
 Docker on Render free tier — [`docs/deploying-on-render.md`](docs/deploying-on-render.md).
 
-## Licence
+## Licence and security
 
-See [LICENSE](LICENSE).
+- Code in this repository: [MIT License](LICENSE)
+- How to report vulnerabilities: [SECURITY.md](SECURITY.md)
+- GOV.UK Design System and Frontend are maintained by GDS; Crown copyright / OGL apply to GOV.UK content patterns as documented on GOV.UK.
