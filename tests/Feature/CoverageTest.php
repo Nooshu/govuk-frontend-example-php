@@ -14,6 +14,7 @@ use App\Govuk\Renderer;
 use App\Govuk\SafeString;
 use App\Govuk\UndefinedValue;
 use App\Http\Controllers\JourneyController;
+use App\Service\Application;
 use App\Service\Journey;
 use App\Support\Assets;
 use Illuminate\Http\Request;
@@ -296,4 +297,41 @@ it('covers change-from-check-answers return and invalid journey steps', function
     } catch (NotFoundHttpException) {
         expect(true)->toBeTrue();
     }
+});
+
+it('covers remaining journey validation and submitted-state guards', function (): void {
+    expect(Journey::requiredComplete(new Application))->toBeFalse();
+    expect(Journey::lengthLabel('not-a-length'))->toBe('not-a-length');
+
+    $this->post('/name', ['fullName' => str_repeat('a', 101)])->assertRedirect('/name');
+    $this->post('/date-of-birth', [
+        'day' => 'ab',
+        'month' => '2',
+        'year' => '1990',
+    ])->assertRedirect('/date-of-birth');
+    $this->post('/date-of-birth', [
+        'day' => '31',
+        'month' => '2',
+        'year' => '1990',
+    ])->assertRedirect('/date-of-birth');
+    $this->post('/date-of-birth', [
+        'day' => '1',
+        'month' => '1',
+        'year' => (string) ((int) date('Y') + 1),
+    ])->assertRedirect('/date-of-birth');
+    $this->post('/date-of-birth', [
+        'day' => '1',
+        'month' => '1',
+        'year' => (string) ((int) date('Y') - 5),
+    ])->assertRedirect('/date-of-birth');
+
+    $this->post('/licence-length', ['licenceLength' => '12-months']);
+    $this->post('/name', ['fullName' => 'Sam Smith']);
+    $this->post('/date-of-birth', ['day' => '1', 'month' => '2', 'year' => '1990']);
+    $this->post('/where-you-will-fish', ['country' => 'Wales']);
+    $this->post('/email', ['email' => 'sam@example.com']);
+    $this->post('/check-answers')->assertRedirect('/confirmation');
+
+    $this->get('/check-answers')->assertRedirect('/confirmation');
+    $this->post('/check-answers')->assertRedirect('/confirmation');
 });
