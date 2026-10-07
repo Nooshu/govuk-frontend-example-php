@@ -255,21 +255,11 @@ Use official GOV.UK Frontend JavaScript to enhance server-rendered markup.
 
 Do not use JavaScript to compensate for incorrect Blade rendering.
 
-# Dependency management
+# Dependencies
 
-Use Composer for PHP dependencies.
+Dependency updates, lockfiles, audits, and Dependabot / Renovate review follow [`.cursor/skills/safe-dependency-updates/SKILL.md`](../skills/safe-dependency-updates/SKILL.md). Keep the dependency surface small; prefer platform / standard-library APIs first. Do **not** start or complete dependency changes while CI is red.
 
-Commit `composer.lock`.
-
-Pin dependencies appropriately.
-
-Keep the dependency surface small.
-
-Use established packages.
-
-Run dependency and vulnerability checks where appropriate.
-
-The project may use the JavaScript ecosystem solely where necessary to obtain/build official GOV.UK Frontend assets. Node.js must not be required for server-side component rendering.
+Node.js may obtain/build GOV.UK Frontend assets only. It must not render component HTML at request time.
 
 # Quality
 
