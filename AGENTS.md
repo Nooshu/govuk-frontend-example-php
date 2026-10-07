@@ -1,7 +1,7 @@
 <!-- ============================================================
   GOV.UK Design System — Agent instructions (PHP / Laravel)
   ============================================================
-  Detail lives in /docs and .cursor/skills/gds-compliant-frontend
+  Detail lives in /docs and .cursor/skills/ (gds-compliant-frontend, safe-dependency-updates)
   ============================================================ -->
 
 ♛ GOV.UK
@@ -14,7 +14,7 @@ Component HTML is produced by `App\Govuk\Renderer` tracking Frontend macros / `t
 
 **LIVE guidance** — [Design System feedback](https://design-system.service.gov.uk/community/feedback/).
 
-Skill: [`.cursor/skills/gds-compliant-frontend/SKILL.md`](.cursor/skills/gds-compliant-frontend/SKILL.md). Purpose: [`docs/project-purpose.md`](docs/project-purpose.md). Stack: [`docs/tech-stack.md`](docs/tech-stack.md).
+Skills: [`.cursor/skills/gds-compliant-frontend/SKILL.md`](.cursor/skills/gds-compliant-frontend/SKILL.md), [`.cursor/skills/safe-dependency-updates/SKILL.md`](.cursor/skills/safe-dependency-updates/SKILL.md). Purpose: [`docs/project-purpose.md`](docs/project-purpose.md). Stack: [`docs/tech-stack.md`](docs/tech-stack.md).
 
 ## Priorities (in order)
 
@@ -28,14 +28,14 @@ Details: [`docs/priorities.md`](docs/priorities.md).
 
 ## Start here
 
-| Audience                  | Doc                                                                                                                     |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Human developers**      | [`docs/onboarding.md`](docs/onboarding.md), [`CONTRIBUTING.md`](CONTRIBUTING.md)                                        |
-| **AI agents (this file)** | Keep reading; skill: [`.cursor/skills/gds-compliant-frontend/SKILL.md`](.cursor/skills/gds-compliant-frontend/SKILL.md) |
-| Dual-audience docs map    | [`docs/documentation-structure.md`](docs/documentation-structure.md), [`docs/README.md`](docs/README.md)                |
-| Project purpose           | [`docs/project-purpose.md`](docs/project-purpose.md)                                                                    |
-| Official guidance URLs    | [`docs/guidance-sources.md`](docs/guidance-sources.md)                                                                  |
-| Stack                     | [`docs/tech-stack.md`](docs/tech-stack.md) — PHP 8.4+ / Laravel 12 / Blade                                              |
+| Audience                  | Doc                                                                                                                                                                        |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Human developers**      | [`docs/onboarding.md`](docs/onboarding.md), [`CONTRIBUTING.md`](CONTRIBUTING.md)                                                                                           |
+| **AI agents (this file)** | Keep reading; skills: [gds-compliant-frontend](.cursor/skills/gds-compliant-frontend/SKILL.md), [safe-dependency-updates](.cursor/skills/safe-dependency-updates/SKILL.md) |
+| Dual-audience docs map    | [`docs/documentation-structure.md`](docs/documentation-structure.md), [`docs/README.md`](docs/README.md)                                                                   |
+| Project purpose           | [`docs/project-purpose.md`](docs/project-purpose.md)                                                                                                                       |
+| Official guidance URLs    | [`docs/guidance-sources.md`](docs/guidance-sources.md)                                                                                                                     |
+| Stack                     | [`docs/tech-stack.md`](docs/tech-stack.md) — PHP 8.4+ / Laravel 12 / Blade                                                                                                 |
 
 **HTML generation:** Native PHP in `app/Govuk/` — do not require Node at request time. Track Frontend macros/`template.njk` and prove PHP ≡ fixtures.
 
@@ -58,7 +58,7 @@ Details: [`docs/priorities.md`](docs/priorities.md).
 9. **Progressive enhancement** — core tasks work without Frontend JS; keep `js-enabled` / `initAll()`.
 10. **Do not ship unreleased GOV.UK chrome** — wait for Frontend release + fixtures.
 11. **100% code coverage** — Pest with `--coverage --min=100` for `app/` (excluding `app/Models`). CI fails below that.
-12. **Always review the latest release notes** before upgrading — https://github.com/alphagov/govuk-frontend/releases/latest — then [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md).
+12. **Dependency and Frontend upgrades need a green pipeline** — follow [`.cursor/skills/safe-dependency-updates/SKILL.md`](.cursor/skills/safe-dependency-updates/SKILL.md). For `govuk-frontend`, also read https://github.com/alphagov/govuk-frontend/releases/latest and [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md).
 13. **Performance and security baseline** — [`baseline/`](baseline/) via `BaselineHeaders` middleware. See [`docs/frontend-performance.md`](docs/frontend-performance.md) and [`docs/frontend-security.md`](docs/frontend-security.md).
 14. **Split finished work into focused commits** with comprehensive messages.
 15. **Document every change for humans and agents**.
@@ -68,24 +68,25 @@ Using this repo does **not** make a service assessment-ready. See [`docs/service
 
 ## Agent playbooks
 
-| Task                                  | Doc                                                                    |
-| ------------------------------------- | ---------------------------------------------------------------------- |
-| Upgrade GOV.UK Frontend               | [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md) |
-| Add a component                       | [`docs/creating-components.md`](docs/creating-components.md)           |
-| Add a pattern                         | [`docs/creating-patterns.md`](docs/creating-patterns.md)               |
-| Layout / chrome                       | [`docs/layout-chrome.md`](docs/layout-chrome.md)                       |
-| Fixture / parity testing              | [`docs/testing-components.md`](docs/testing-components.md)             |
-| Page shell                            | [`docs/page-shell.md`](docs/page-shell.md)                             |
-| Example service (journey + catalogue) | [`docs/example-service.md`](docs/example-service.md)                   |
-| Deploy on Render                      | [`docs/deploying-on-render.md`](docs/deploying-on-render.md)           |
-| Frontend performance                  | [`docs/frontend-performance.md`](docs/frontend-performance.md)         |
-| Frontend security                     | [`docs/frontend-security.md`](docs/frontend-security.md)               |
-| Accessibility                         | [`docs/accessibility.md`](docs/accessibility.md)                       |
-| Content & forms                       | [`docs/content-and-forms.md`](docs/content-and-forms.md)               |
-| Design tokens                         | [`docs/design-tokens.md`](docs/design-tokens.md)                       |
-| Styles / Sass cascade                 | [`docs/styles.md`](docs/styles.md)                                     |
-| Dual-audience documentation           | [`docs/documentation-structure.md`](docs/documentation-structure.md)   |
-| Guidance sources                      | [`docs/guidance-sources.md`](docs/guidance-sources.md)                 |
+| Task                                  | Doc                                                                                                                          |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Upgrade GOV.UK Frontend               | [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md)                                                       |
+| Safe dependency updates               | [`.cursor/skills/safe-dependency-updates/SKILL.md`](.cursor/skills/safe-dependency-updates/SKILL.md) — **green CI required** |
+| Add a component                       | [`docs/creating-components.md`](docs/creating-components.md)                                                                 |
+| Add a pattern                         | [`docs/creating-patterns.md`](docs/creating-patterns.md)                                                                     |
+| Layout / chrome                       | [`docs/layout-chrome.md`](docs/layout-chrome.md)                                                                             |
+| Fixture / parity testing              | [`docs/testing-components.md`](docs/testing-components.md)                                                                   |
+| Page shell                            | [`docs/page-shell.md`](docs/page-shell.md)                                                                                   |
+| Example service (journey + catalogue) | [`docs/example-service.md`](docs/example-service.md)                                                                         |
+| Deploy on Render                      | [`docs/deploying-on-render.md`](docs/deploying-on-render.md)                                                                 |
+| Frontend performance                  | [`docs/frontend-performance.md`](docs/frontend-performance.md)                                                               |
+| Frontend security                     | [`docs/frontend-security.md`](docs/frontend-security.md)                                                                     |
+| Accessibility                         | [`docs/accessibility.md`](docs/accessibility.md)                                                                             |
+| Content & forms                       | [`docs/content-and-forms.md`](docs/content-and-forms.md)                                                                     |
+| Design tokens                         | [`docs/design-tokens.md`](docs/design-tokens.md)                                                                             |
+| Styles / Sass cascade                 | [`docs/styles.md`](docs/styles.md)                                                                                           |
+| Dual-audience documentation           | [`docs/documentation-structure.md`](docs/documentation-structure.md)                                                         |
+| Guidance sources                      | [`docs/guidance-sources.md`](docs/guidance-sources.md)                                                                       |
 
 ## Quick page review
 
@@ -107,8 +108,4 @@ Before finishing a page change:
 
 ## Watching upstream
 
-**Before every Frontend upgrade:** read https://github.com/alphagov/govuk-frontend/releases/latest.
-
-Upgrade only via [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md).
-
-Local start: `npm start`. Verify: `npm run verify`.
+Dependency bumps (npm, language packages, Dependabot) and Frontend pin changes: [`.cursor/skills/safe-dependency-updates/SKILL.md`](.cursor/skills/safe-dependency-updates/SKILL.md) (**CI must be green** before start and before complete). `govuk-frontend` still uses [`docs/upgrading-govuk-frontend.md`](docs/upgrading-govuk-frontend.md).
