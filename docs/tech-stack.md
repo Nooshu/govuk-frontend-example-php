@@ -4,6 +4,8 @@
 
 This is the **PHP** line of the GOV.UK Frontend language examples. Server-rendered HTML is produced by native PHP component renderers (Blade for pages). Node is used only to install the pinned `govuk-frontend` package, compile Sass, and run shared baseline/docs checks — never to render component HTML at request time.
 
+`package.json` may list `overrides` for transitive npm advisories that parents have not yet bumped (for example `katex` under `markdownlint-cli2`). Prefer bumping the parent tool when possible; keep overrides minimal and re-check on each Dependabot cycle.
+
 ## Two layers
 
 | Layer                          | Stack                                                                              | Notes                                                                                |

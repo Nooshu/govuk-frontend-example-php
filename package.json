@@ -26,5 +26,8 @@
     "markdownlint-cli2": "0.24.0",
     "prettier": "3.9.10",
     "sass": "1.105.2"
+  },
+  "overrides": {
+    "katex": "0.18.2"
   }
 }
