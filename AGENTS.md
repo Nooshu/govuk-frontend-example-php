@@ -8,7 +8,7 @@
 
 # GOV.UK Frontend example — PHP
 
-**PHP / Laravel / Blade** example for **GDS-compliant** government frontends: native PHP generates HTML; **[GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)** (pinned **6.5.1**) is the **only** UI component library. **No frontend frameworks** (React, Vue, Angular, Svelte, etc.) for UI.
+**PHP / Laravel / Blade** example for **GDS-compliant** government frontends: native PHP generates HTML; **[GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)** (pinned **6.6.0**) is the **only** UI component library. **No frontend frameworks** (React, Vue, Angular, Svelte, etc.) for UI.
 
 Component HTML is produced by `App\Govuk\Renderer` tracking Frontend macros / `template.njk`. **Never** Nunjucks or Node at request time. Official **test fixtures** are the contract: PHP HTML must match every fixture `html` byte-for-byte.
 

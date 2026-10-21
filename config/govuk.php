@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'service_name' => env('SERVICE_NAME', 'Apply for a fishing rod licence'),
-    'frontend_version' => '6.5.1',
+    'frontend_version' => '6.6.0',
     'demos_enabled' => filter_var(
         env('DEMOS_ENABLED', env('APP_ENV') !== 'production' ? 'true' : 'false'),
         FILTER_VALIDATE_BOOLEAN
