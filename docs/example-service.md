@@ -4,7 +4,7 @@
 
 Every HTML page shows an **Important** notification banner (“This is a live demo. It is not a real government service.”), styled yellow via `.app-demo-banner`, and a phase banner that repeats that it is a demonstration. Search engines are told to stay away: `meta robots` and `X-Robots-Tag` are `noindex, nofollow`, and `/robots.txt` disallows all paths.
 
-Pages are **PHP / Laravel / Blade**. Component HTML comes from **native PHP renderers** that track GOV.UK Frontend macros and match every official fixture. The pin is **6.5.1**. See [tech-stack.md](tech-stack.md).
+Pages are **PHP / Laravel / Blade**. Component HTML comes from **native PHP renderers** that track GOV.UK Frontend macros and match every official fixture. The pin is **6.6.0**. See [tech-stack.md](tech-stack.md).
 
 ## Run it
 

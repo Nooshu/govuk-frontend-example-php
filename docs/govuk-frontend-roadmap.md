@@ -21,11 +21,11 @@ Before adding a component that is not yet in this repo:
 
 ## Snapshot (refresh on each upgrade)
 
-| Status                               | Notes                                                                                                                                                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Latest upstream (as of Sep 2026)** | [v6.5.1](https://github.com/alphagov/govuk-frontend/releases/latest) — includes Feedback and Language navigation as Trial components from 6.5.0; 6.5.1 fixes Service navigation + right-aligned Language navigation |
-| **Already covered here**             | GOV.UK Frontend **6.5.1** pinned; catalogue + rod licence journey                                                                                                                                                   |
-| **Do not hand-build**                | Dark mode chrome, AI patterns, or unreleased components; do not copy-paste HTML instead of macros                                                                                                                   |
+| Status                               | Notes                                                                                                                                                                                        |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Latest upstream (as of Oct 2026)** | [v6.6.0](https://github.com/alphagov/govuk-frontend/releases/latest) — Character count `countType` (`Intl.Segmenter`); deprecates `maxwords` in favour of `maxlength` + `countType: "words"` |
+| **Already covered here**             | GOV.UK Frontend **6.6.0** pinned; catalogue + rod licence journey; character-count emits `data-count-type`                                                                                   |
+| **Do not hand-build**                | Dark mode chrome, AI patterns, or unreleased components; do not copy-paste HTML instead of macros                                                                                            |
 
 ## After upgrade
 
