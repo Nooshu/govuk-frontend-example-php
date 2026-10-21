@@ -312,11 +312,6 @@ final class Forms
     public static function renderCharacterCount(Params $p): string
     {
         [$maxwords, $maxlength] = [$p->get('maxwords'), $p->get('maxlength')];
-        // Frontend 6.6.0: countType option, else "words" when maxwords is set (macro template.njk).
-        $countType = $p->get('countType');
-        if (! Nunjucks::truthy($countType) && Nunjucks::truthy($maxwords)) {
-            $countType = 'words';
-        }
         $hasNoLimit = (! Nunjucks::truthy($maxwords) && ! Nunjucks::truthy($maxlength));
         $id_ = self::componentId($p);
         $descriptionNoLimit = Nunjucks::undefined();
@@ -325,7 +320,10 @@ final class Forms
             if (Nunjucks::truthy($maxwords)) {
                 $limit = $maxwords;
             }
-            $unit = Nunjucks::str($countType) === 'words' ? 'words' : 'characters';
+            $unit = 'characters';
+            if (Nunjucks::truthy($maxwords)) {
+                $unit = 'words';
+            }
             $description = 'You can enter up to %{count} '.$unit;
             $supplied = $p->get('textareaDescriptionText');
             if (Nunjucks::truthy($supplied)) {
@@ -348,19 +346,7 @@ final class Forms
 ';
             }
         }
-        $countTypeAttr = Nunjucks::truthy($countType) ? $countType : false;
-        $attributesHtml = Attributes::render(Params::make(
-            'data-module',
-            'govuk-character-count',
-            'data-maxlength',
-            Params::make('value', $maxlength, 'optional', true),
-            'data-maxwords',
-            Params::make('value', $maxwords, 'optional', true),
-            'data-threshold',
-            Params::make('value', $p->get('threshold'), 'optional', true),
-            'data-count-type',
-            Params::make('value', $countTypeAttr, 'optional', true),
-        ));
+        $attributesHtml = Attributes::render(Params::make('data-module', 'govuk-character-count', 'data-maxlength', Params::make('value', $maxlength, 'optional', true), 'data-threshold', Params::make('value', $p->get('threshold'), 'optional', true), 'data-maxwords', Params::make('value', $maxwords, 'optional', true)));
         $description = $p->get('textareaDescriptionText');
         if (($hasNoLimit && Nunjucks::truthy($description))) {
             $attributesHtml .= Attributes::i18n('textarea-description', Nunjucks::undefined(), Params::make('other', $description));

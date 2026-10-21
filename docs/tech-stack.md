@@ -10,7 +10,7 @@ This is the **PHP** line of the GOV.UK Frontend language examples. Server-render
 
 | Layer                          | Stack                                                                              | Notes                                                                                |
 | ------------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **GOV.UK Frontend (upstream)** | Node package `govuk-frontend` **6.6.0**, Nunjucks macros, official `fixtures.json` | Install / Sass / fixture freshness only                                              |
+| **GOV.UK Frontend (upstream)** | Node package `govuk-frontend` **6.5.1**, Nunjucks macros, official `fixtures.json` | Install / Sass / fixture freshness only                                              |
 | **This service (wrapper)**     | **PHP 8.4+**, **Laravel 12**, **Blade**, Composer, Pest, Pint, Larastan            | Native `App\Govuk\Renderer` HTML; pages compose `<x-govuk.*>` / `Renderer::render()` |
 
 ## Commands
@@ -61,7 +61,7 @@ Pest / PHPUnit coverage target: **100%** functions, branches, statements for app
 | Item                    | Value                                                                                                                                     |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Implementation language | PHP 8.4+ / Laravel 12 / Blade                                                                                                             |
-| `govuk-frontend`        | `6.6.0`                                                                                                                                   |
+| `govuk-frontend`        | `6.5.1`                                                                                                                                   |
 | Sass pipeline           | `npm run build:styles`                                                                                                                    |
 | Local start             | `npm start`                                                                                                                               |
 | Tests                   | `npm test` / `./vendor/bin/pest`                                                                                                          |

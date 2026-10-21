@@ -36,7 +36,7 @@ This is a demonstration. It is not a live government service.
 ## Stack
 
 - PHP 8.4+ / Laravel 12 / Blade / Composer / Pest
-- GOV.UK Frontend **6.6.0** (pinned via npm)
+- GOV.UK Frontend **6.5.1** (pinned via npm)
 - Sass pipeline (`styles/` → `govuk-overrides.scss` last) — not the prebuilt dist CSS
 - Shared [`baseline/`](baseline/) security and cache headers
 

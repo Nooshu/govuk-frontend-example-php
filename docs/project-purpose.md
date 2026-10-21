@@ -8,7 +8,7 @@ This line demonstrates that teams can:
 
 1. Meet [Service Standard](https://www.gov.uk/service-manual/service-standard) and [Technology Code of Practice](https://www.gov.uk/guidance/the-technology-code-of-practice) expectations for common components, accessibility, and open standards — as far as the UI layer can.
 2. Use **PHP 8.4+**, **Laravel 12**, and **Blade** for HTML generation and application logic.
-3. Use **[GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)** (pinned release **6.6.0**) as the **only** frontend component library — styles, progressive-enhancement JS, and macro-driven HTML contracts.
+3. Use **[GOV.UK Frontend](https://frontend.design-system.service.gov.uk/)** (pinned release **6.5.1**) as the **only** frontend component library — styles, progressive-enhancement JS, and macro-driven HTML contracts.
 4. Do **not** introduce SPA or component **frontend frameworks** (React, Vue, Angular, Svelte, Next.js UI layers, etc.) for rendering GOV.UK UI.
 5. Derive component HTML from **native PHP renderers** that track GOV.UK Frontend macros / `template.njk` — never Nunjucks or Node at request time — and wire **official test fixtures** for extensive **100% HTML parity** testing of PHP output.
 
