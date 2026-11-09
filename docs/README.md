@@ -24,7 +24,7 @@ How we keep docs dual-purpose: [documentation-structure.md](documentation-struct
 | [guidance-sources.md](guidance-sources.md)               | Official GDS / Service Manual / Frontend URLs    |
 | [documentation-structure.md](documentation-structure.md) | Dual-audience docs + language practice rules     |
 | [example-service.md](example-service.md)                 | Rod licence journey and catalogue routes         |
-| [deploying-on-render.md](deploying-on-render.md)         | Render.com free-tier Docker deploy               |
+| [deploying-on-cloud-run.md](deploying-on-cloud-run.md)   | Google Cloud Run Docker deploy                   |
 | [CONTRIBUTING.md](../CONTRIBUTING.md)                    | How to contribute, local checks, PR expectations |
 
 ## For AI agents
@@ -79,5 +79,5 @@ Agents should still open human-oriented docs when onboarding a teammate or expla
 Add `docs/govuk-<kebab-name>.md` when each component ships. Until then: [govuk-components.md](govuk-components.md) and the [Design System components](https://design-system.service.gov.uk/components/).
 
 - [example-service.md](example-service.md)
-- [deploying-on-render.md](deploying-on-render.md)
+- [deploying-on-cloud-run.md](deploying-on-cloud-run.md)
 - [tech-stack.md](tech-stack.md)

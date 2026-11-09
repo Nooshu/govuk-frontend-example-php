@@ -122,7 +122,7 @@ On logout, send `Clear-Site-Data` from `clearSiteDataHeader()` (default `"cookie
 
 `Server`, `X-Powered-By`, `X-AspNet-Version`, `X-AspNetMvc-Version`, `Public-Key-Pins`, `Public-Key-Pins-Report-Only`, `Expect-CT`
 
-Strip them in the app and again at the edge if a proxy adds `Server` after the app.
+Strip them in the app and again at the edge if a proxy adds `Server` after the app. The Cloud Run image turns off `expose_php`. Caddy deletes `Server` and `Via` after the response is written. See [deploying-on-cloud-run.md](deploying-on-cloud-run.md).
 
 ## Deliberately omitted
 

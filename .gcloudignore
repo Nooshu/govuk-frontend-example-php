@@ -1,0 +1,10 @@
+#!include:.gitignore
+
+.git
+.github
+.cursor
+tests
+docs
+coverage
+*.md
+.DS_Store

@@ -28,7 +28,7 @@ From the [GDS Way](https://gds-way.digital.cabinet-office.gov.uk/standards/optim
 | Medium   | Fewer cross-origin connections          | `performance.budgets.thirdPartyRequests` is `0`                                                |
 | Low      | Small cookies, HTTP/2 or HTTP/3         | Cookie-free asset responses; HTTP/2 minimum, HTTP/3 preferred                                  |
 
-Brotli (`Content-Encoding: br`) is the compression standard for HTML, CSS, JavaScript, and other compressible responses. The HTTP server or edge compresses; the app does not set `Content-Encoding`. When the client sends `Accept-Encoding: br`, respond with Brotli. Offer Gzip only when the client does not advertise `br`.
+Brotli (`Content-Encoding: br`) is the compression standard for HTML, CSS, JavaScript, and other compressible responses. The HTTP server or edge compresses; the app does not set `Content-Encoding`. When the client sends `Accept-Encoding: br`, respond with Brotli. Offer Gzip only when the client does not advertise `br`. On Cloud Run, Caddy does this (`encode br gzip`) and suffixes `ETag` with the encoding (`-br` or `-gzip`). See [deploying-on-cloud-run.md](deploying-on-cloud-run.md).
 
 The helper sets `Vary: Accept-Encoding` so caches store the Brotli, Gzip, and uncompressed copies separately. `policy.json` records this as `compression.standard: "br"` and `compression.fallback: "gzip"`.
 

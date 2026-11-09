@@ -1,0 +1,36 @@
+# Cloud Run terminates TLS and injects PORT (default 8080).
+# This process is the only thing that can reach the container, so every
+# connecting address is the platform proxy.
+{
+	admin off
+	persist_config off
+	auto_https off
+	servers {
+		trusted_proxies static private_ranges 169.254.0.0/16
+	}
+}
+
+:{$PORT:8080} {
+	root * /app/public
+
+	# Prefer Brotli when the client advertises it. Gzip is the fallback.
+	# Encoded responses drop ETag (Caddy). Vary: Accept-Encoding still comes from Laravel.
+	encode br gzip
+
+	# Existing files under public/ (favicon) are served here.
+	# Everything else, including /robots.txt, goes to public/index.php.
+	php_fastcgi 127.0.0.1:9000
+
+	# Caddy adds Server and Via after PHP. Defer so those names do not reappear.
+	header {
+		-Server
+		-Via
+		defer
+	}
+
+	log {
+		output stdout
+		format console
+		level INFO
+	}
+}

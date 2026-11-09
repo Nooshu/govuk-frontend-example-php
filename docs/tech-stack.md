@@ -50,7 +50,7 @@ Every HTML page is hidden from search engines:
 
 ## Deploy
 
-Docker Web Service on Render free tier — see [deploying-on-render.md](deploying-on-render.md).
+Docker service on Google Cloud Run — see [deploying-on-cloud-run.md](deploying-on-cloud-run.md).
 
 ## Coverage
 

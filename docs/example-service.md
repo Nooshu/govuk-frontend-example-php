@@ -16,9 +16,9 @@ npm start
 
 Opens at <http://127.0.0.1:8000>. Set `PORT` to use another port.
 
-Public demo hosting: [deploying-on-render.md](deploying-on-render.md).
+Public demo hosting: [deploying-on-cloud-run.md](deploying-on-cloud-run.md).
 
-`APP_ENV=production` hides the component catalogue unless `DEMOS_ENABLED=true` (set on the Render demo). The licence journey stays available.
+`APP_ENV=production` hides the component catalogue unless `DEMOS_ENABLED=true` (set on the Cloud Run demo). The licence journey stays available.
 
 ## Start to confirmation
 

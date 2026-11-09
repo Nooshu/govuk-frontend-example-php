@@ -78,7 +78,7 @@ Using this repo does **not** make a service assessment-ready. See [`docs/service
 | Fixture / parity testing              | [`docs/testing-components.md`](docs/testing-components.md)                                                                   |
 | Page shell                            | [`docs/page-shell.md`](docs/page-shell.md)                                                                                   |
 | Example service (journey + catalogue) | [`docs/example-service.md`](docs/example-service.md)                                                                         |
-| Deploy on Render                      | [`docs/deploying-on-render.md`](docs/deploying-on-render.md)                                                                 |
+| Deploy on Cloud Run                   | [`docs/deploying-on-cloud-run.md`](docs/deploying-on-cloud-run.md)                                                           |
 | Frontend performance                  | [`docs/frontend-performance.md`](docs/frontend-performance.md)                                                               |
 | Frontend security                     | [`docs/frontend-security.md`](docs/frontend-security.md)                                                                     |
 | Accessibility                         | [`docs/accessibility.md`](docs/accessibility.md)                                                                             |

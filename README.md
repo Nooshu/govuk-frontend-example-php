@@ -69,7 +69,7 @@ Runs Node baseline/Sass coverage gates and Pest, including byte-for-byte fixture
 
 ## Deploy
 
-Docker on Render free tier — [`docs/deploying-on-render.md`](docs/deploying-on-render.md).
+Docker on Google Cloud Run — [`docs/deploying-on-cloud-run.md`](docs/deploying-on-cloud-run.md).
 
 ## Licence and security
 

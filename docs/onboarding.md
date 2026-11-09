@@ -40,7 +40,7 @@ app/Http/                 # Controllers + BaselineHeaders middleware
 resources/views/          # Blade layouts and pages (compose via Renderer)
 tests/Feature/Fixtures/   # Pest byte-for-byte fixture parity
 tests/Feature/JourneyTest.php
-Dockerfile / render.yaml  # Render free-tier Docker deploy
+Dockerfile / docker/      # Cloud Run image (Caddy + PHP-FPM)
 ```
 
 ## Run modes
@@ -97,4 +97,4 @@ See [CONTRIBUTING.md](../CONTRIBUTING.md). Dotfiles: `.editorconfig`, `.prettier
 2. [example-service.md](example-service.md)
 3. [testing-components.md](testing-components.md)
 4. [page-shell.md](page-shell.md) / [layout-chrome.md](layout-chrome.md)
-5. [deploying-on-render.md](deploying-on-render.md)
+5. [deploying-on-cloud-run.md](deploying-on-cloud-run.md)
