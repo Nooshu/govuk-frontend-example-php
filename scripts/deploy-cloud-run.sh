@@ -56,6 +56,21 @@ gcloud secrets add-iam-policy-binding "$SECRET" \
   --role="roles/secretmanager.secretAccessor" \
   --quiet >/dev/null
 
+echo "Granting roles/run.builder to ${runtime_sa}"
+for attempt in 1 2 3 4 5 6; do
+  if gcloud projects add-iam-policy-binding "$PROJECT" \
+    --member="serviceAccount:${runtime_sa}" \
+    --role="roles/run.builder" \
+    --quiet >/dev/null; then
+    break
+  fi
+  if [[ "$attempt" -eq 6 ]]; then
+    echo "Could not grant roles/run.builder" >&2
+    exit 1
+  fi
+  sleep "$attempt"
+done
+
 echo "Deploying ${SERVICE} in ${REGION}"
 gcloud run deploy "$SERVICE" \
   --source . \

@@ -60,7 +60,7 @@ Existing session cookies stop working after a rotation. That is expected.
 - [ ] `/robots.txt` disallows `/`
 - [ ] A form POST in the licence journey keeps the answers on the next page
 - [ ] A response that sends `Accept-Encoding: br` is Brotli (`Content-Encoding: br`)
-- [ ] `Server` and `X-Powered-By` are absent
+- [ ] `X-Powered-By` is absent. Cloud Run’s edge adds `Server: Google Frontend` after the container; Caddy still removes its own `Server` and `Via`
 
 Set `APP_URL` to the service URL if you generate absolute links outside a request:
 
@@ -115,6 +115,7 @@ Open <http://127.0.0.1:8080>. `SESSION_SECURE_COOKIE=false` lets the session coo
 | What you see                                                | What to do                                                                                                                          |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | Cloud Build cannot update Cloud Run                         | The account that runs the script needs Cloud Run Admin, Cloud Build Editor, and Service Account User on the runtime service account |
+| Build fails with `PERMISSION_DENIED` on `run-sources-…`     | The Compute Engine default service account needs Cloud Run Builder (`roles/run.builder`). The deploy script grants that role        |
 | `/health` returns 500 and the log says incorrect key length | The secret is not a Laravel key. Add a version from `php artisan key:generate --show` and deploy again                              |
 | The journey forgets answers                                 | `APP_KEY` changed between instances, or `SESSION_DRIVER` is `file`. Keep the cookie driver and one secret                           |
 | First request is slow                                       | `MIN_INSTANCES` is `0`, so Cloud Run starts an instance on demand. Set `MIN_INSTANCES=1` to keep one warm                           |
